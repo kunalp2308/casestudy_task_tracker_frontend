@@ -109,27 +109,19 @@ export default function App() {
   }
 
   useEffect(() => {
-    const hash = window.location.hash;
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("access_token");
+    const authError = params.get("auth_error");
 
-    if (hash) {
-      const params = new URLSearchParams(hash.substring(1));
-      const token = params.get("access_token");
-      const authError = params.get("auth_error");
-
-      if (authError) {
-        setError(decodeURIComponent(authError));
-        setAuthLoading(false);
-      } else if (token) {
-        setAccessToken(token);
-        // Clear hash from URL without reloading
-        window.history.replaceState(
-          {},
-          document.title,
-          window.location.pathname,
-        );
-        loadSession({ showLoginToast: true });
-        return;
-      }
+    if (authError) {
+      setError(decodeURIComponent(authError));
+      window.history.replaceState({}, document.title, window.location.pathname);
+      setAuthLoading(false);
+    } else if (token) {
+      setAccessToken(token);
+      window.history.replaceState({}, document.title, window.location.pathname);
+      loadSession({ showLoginToast: true });
+      return;
     }
 
     if (getAccessToken()) {
