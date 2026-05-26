@@ -1,5 +1,4 @@
 export const TASK_STATUSES = [
-  "new",
   "in-progress",
   "blocked",
   "completed",
